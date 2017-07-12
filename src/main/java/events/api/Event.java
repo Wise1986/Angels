@@ -9,8 +9,6 @@ import org.quartz.JobDetail;
  */
 public interface Event {
 
-    public void startEvent();
-
     public void finishEvent();
 
     public int getDuration();

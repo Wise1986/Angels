@@ -1,17 +1,14 @@
 
 import events.api.Event;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
+import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.listeners.JobChainingJobListener;
+import org.quartz.listeners.JobListenerSupport;
 
 /**
  *
@@ -49,5 +46,10 @@ public class AngelScheduler extends base.BaseEntity{
         } catch (SchedulerException ex) {
             error(ex);
         }
+
+    }
+    
+    public void start() throws SchedulerException{
+        scheduler.start();
     }
 }

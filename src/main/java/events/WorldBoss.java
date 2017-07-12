@@ -1,6 +1,9 @@
 package events;
 
 import events.api.Event;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.quartz.DateBuilder;
 import org.quartz.Job;
@@ -14,20 +17,22 @@ import org.quartz.JobListener;
  *
  * @author Ruslan_Makhmudau
  */
-public class GuildBoss extends base.BaseEntity implements Event, Job, JobListener {
+public class WorldBoss extends base.BaseEntity implements Event, Job, JobListener {
 
-    public static String startButton = "images\\events\\guildBoss\\start.png";
-    public static String quickCheckBox = "images\\events\\guildBoss\\quickCheck.png";
-    public static String autoCheckBox = "images\\events\\guildBoss\\autoCheck.png";
+    public static String startButton = "images\\events\\worldBoss\\start.png";
+    public static String quickCheckBox = "images\\events\\worldBoss\\quickCheck.png";
+    public static String autoCheckBox = "images\\events\\worldBoss\\autoCheck.png";
     //in minutes
-    public static final int DEFAULT_DURATION = 25;
+    public static final int DEFAULT_DURATION = 1;
     //in seconds
     private static final int DEFAULT_TIMEOUT = 15;
     public static Date startDate;
     public static Boolean triedBack;
 
-    public GuildBoss(Date startDate) {
+    public WorldBoss(String startDate) throws ParseException {
         triedBack = false;
+        DateFormat df = new SimpleDateFormat("hh:mm");
+        this.startDate = df.parse(startDate);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class GuildBoss extends base.BaseEntity implements Event, Job, JobListene
 
     @Override
     public JobDetail getJob() {
-        return JobBuilder.newJob(GuildBoss.class).withIdentity("Guild Boss").build();
+        return JobBuilder.newJob(WorldBoss.class).withIdentity("Guild Boss").build();
     }
 
     @Override
