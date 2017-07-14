@@ -1,23 +1,22 @@
 package events;
 
+import base.BaseEntity;
 import events.api.Event;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import org.quartz.DateBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobListener;
+import util.Common;
 
 /**
  *
  * @author Ruslan_Makhmudau
  */
-public class WorldBoss extends base.BaseEntity implements Event, Job, JobListener {
+public class WorldBoss extends BaseEntity implements Event, Job {
 
     public static String startButton = "images\\events\\worldBoss\\start.png";
     public static String quickCheckBox = "images\\events\\worldBoss\\quickCheck.png";
@@ -26,17 +25,21 @@ public class WorldBoss extends base.BaseEntity implements Event, Job, JobListene
     public static final int DEFAULT_DURATION = 1;
     //in seconds
     private static final int DEFAULT_TIMEOUT = 15;
-    public static Date startDate;
+    public Date startDate;
     public static Boolean triedBack;
+    private Calendar cal = Calendar.getInstance();
 
     public WorldBoss(String startDate) throws ParseException {
         triedBack = false;
-        DateFormat df = new SimpleDateFormat("hh:mm");
-        this.startDate = df.parse(startDate);
+        this.startDate = Common.fixDate(startDate);
+    }
+
+    public WorldBoss() {
     }
 
     @Override
     public void finishEvent() {
+        debug("finish");
         click(backButton);
     }
 
@@ -52,11 +55,12 @@ public class WorldBoss extends base.BaseEntity implements Event, Job, JobListene
 
     @Override
     public Date getEndDate() {
-        return DateBuilder.futureDate(DEFAULT_DURATION, DateBuilder.IntervalUnit.MINUTE);
+        return Common.addDate(startDate, Calendar.MINUTE, DEFAULT_DURATION);
     }
 
     @Override
     public void execute(JobExecutionContext jec) {
+        debug("Starting Guild Boss ");
         if (waitFor(startButton, DEFAULT_TIMEOUT)) {
             click(startButton);
             clickPrecision(quickCheckBox);
@@ -70,26 +74,7 @@ public class WorldBoss extends base.BaseEntity implements Event, Job, JobListene
 
     @Override
     public JobDetail getJob() {
-        return JobBuilder.newJob(WorldBoss.class).withIdentity("Guild Boss").build();
+        return JobBuilder.newJob(WorldBoss.class).build();
     }
 
-    @Override
-    public String getName() {
-        return "";
-    }
-
-    @Override
-    public void jobToBeExecuted(JobExecutionContext jec) {
-
-    }
-
-    @Override
-    public void jobExecutionVetoed(JobExecutionContext jec) {
-
-    }
-
-    @Override
-    public void jobWasExecuted(JobExecutionContext jec, JobExecutionException jee) {
-        finishEvent();
-    }
 }

@@ -1,12 +1,19 @@
 
+import base.AngelListener;
+import events.WorldBoss;
 import events.api.Event;
 import java.util.Date;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
 import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.EverythingMatcher;
 import org.quartz.listeners.JobChainingJobListener;
 import org.quartz.listeners.JobListenerSupport;
 
@@ -33,13 +40,11 @@ public class AngelScheduler extends base.BaseEntity{
 
     public AngelScheduler() throws SchedulerException {
         this.scheduler = StdSchedulerFactory.getDefaultScheduler();
-
     }
 
     public void addEvent(Event event) {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .startAt(event.getStartDate())
-                .endAt(event.getEndDate())
                 .build();
         try {
             scheduler.scheduleJob(event.getJob(), trigger);
@@ -49,7 +54,12 @@ public class AngelScheduler extends base.BaseEntity{
 
     }
     
-    public void start() throws SchedulerException{
+    public void start() throws SchedulerException, InterruptedException{
+        AngelListener al = new AngelListener();
+        scheduler.getListenerManager().addTriggerListener(al, EverythingMatcher.allTriggers());
+        
         scheduler.start();
+        Thread.sleep(2000);
+        scheduler.shutdown();
     }
 }
