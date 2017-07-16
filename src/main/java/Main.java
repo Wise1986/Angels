@@ -22,34 +22,15 @@ public class Main {
     
     
 
-    public static void main(String[] args) throws SchedulerException, ParseException, InterruptedException {
+    public static void main(String[] args) throws SchedulerException, InterruptedException  {
         System.setProperty("user.timezone", "GMT+3");
         //WatchDog wd = new WatchDog();
         //wd.selectBrowserPage();
         
-        //GuildBoss gb = new GuildBoss(new Date());
-        
-        
-        //gb.execute(null);
-        
-        
         AngelScheduler as = new AngelScheduler();
-        as.addEvent(new WorldBoss("18:30"));
+        as.addEvent(new WorldBoss());
         as.start();
         
-        /*
-        Scheduler sch = StdSchedulerFactory.getDefaultScheduler();
-        
-        JobDetail jd = JobBuilder.newJob(Test.class)
-                .build();
-        
-        Trigger tr = TriggerBuilder.newTrigger()
-                .startAt(Common.addDate(Calendar.getInstance().getTime(), Calendar.SECOND, 1))
-                .build();
-        
-        sch.scheduleJob(jd, tr);
-        sch.start();
-*/
     }
     
 }

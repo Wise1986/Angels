@@ -3,6 +3,8 @@ import base.AngelListener;
 import events.WorldBoss;
 import events.api.Event;
 import java.util.Date;
+import org.quartz.CronScheduleBuilder;
+import static org.quartz.CronScheduleBuilder.cronSchedule;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobListener;
@@ -21,7 +23,7 @@ import org.quartz.listeners.JobListenerSupport;
  *
  * @author Ruslan_Makhmudau
  */
-public class AngelScheduler extends base.BaseEntity{
+public class AngelScheduler extends base.BaseEntity {
 
     private static Date startTime;
     private static Date worldBoss1;
@@ -44,7 +46,7 @@ public class AngelScheduler extends base.BaseEntity{
 
     public void addEvent(Event event) {
         Trigger trigger = TriggerBuilder.newTrigger()
-                .startAt(event.getStartDate())
+                .withSchedule(cronSchedule(event.getSchedule()))
                 .build();
         try {
             scheduler.scheduleJob(event.getJob(), trigger);
@@ -53,11 +55,11 @@ public class AngelScheduler extends base.BaseEntity{
         }
 
     }
-    
-    public void start() throws SchedulerException, InterruptedException{
+
+    public void start() throws SchedulerException, InterruptedException {
         AngelListener al = new AngelListener();
         scheduler.getListenerManager().addTriggerListener(al, EverythingMatcher.allTriggers());
-        
+
         scheduler.start();
         Thread.sleep(2000);
         scheduler.shutdown();

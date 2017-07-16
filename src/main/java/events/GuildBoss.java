@@ -1,6 +1,7 @@
 package events;
 
 import events.api.Event;
+import java.util.Calendar;
 import java.util.Date;
 import org.quartz.DateBuilder;
 import org.quartz.Job;
@@ -8,13 +9,13 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobListener;
+import util.Common;
 
 /**
  *
  * @author Ruslan_Makhmudau
  */
-public class GuildBoss extends base.BaseEntity implements Event, Job, JobListener {
+public class GuildBoss extends base.BaseEntity implements Event, Job {
 
     public static String startButton = "images\\events\\guildBoss\\start.png";
     public static String quickCheckBox = "images\\events\\guildBoss\\quickCheck.png";
@@ -23,10 +24,10 @@ public class GuildBoss extends base.BaseEntity implements Event, Job, JobListene
     public static final int DEFAULT_DURATION = 25;
     //in seconds
     private static final int DEFAULT_TIMEOUT = 15;
-    public static Date startDate;
     public static Boolean triedBack;
+    public String schedule = "";
 
-    public GuildBoss(Date startDate) {
+    public GuildBoss() {
         triedBack = false;
     }
 
@@ -41,13 +42,8 @@ public class GuildBoss extends base.BaseEntity implements Event, Job, JobListene
     }
 
     @Override
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    @Override
     public Date getEndDate() {
-        return DateBuilder.futureDate(DEFAULT_DURATION, DateBuilder.IntervalUnit.MINUTE);
+        return Common.addDate(Calendar.getInstance().getTime(), Calendar.MINUTE, DEFAULT_DURATION);
     }
 
     @Override
@@ -69,22 +65,7 @@ public class GuildBoss extends base.BaseEntity implements Event, Job, JobListene
     }
 
     @Override
-    public String getName() {
-        return "";
-    }
-
-    @Override
-    public void jobToBeExecuted(JobExecutionContext jec) {
-
-    }
-
-    @Override
-    public void jobExecutionVetoed(JobExecutionContext jec) {
-
-    }
-
-    @Override
-    public void jobWasExecuted(JobExecutionContext jec, JobExecutionException jee) {
-        finishEvent();
+    public String getSchedule() {
+        return schedule;
     }
 }

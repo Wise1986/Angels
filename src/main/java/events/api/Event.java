@@ -13,7 +13,7 @@ public interface Event {
 
     public int getDuration();
 
-    public Date getStartDate();
+    public String getSchedule();
 
     public Date getEndDate();
 
