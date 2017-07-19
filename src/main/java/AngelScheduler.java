@@ -1,23 +1,14 @@
 
 import base.AngelListener;
-import events.WorldBoss;
 import events.api.Event;
 import java.util.Date;
-import org.quartz.CronScheduleBuilder;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.JobListener;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import static org.quartz.TriggerBuilder.newTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.EverythingMatcher;
-import org.quartz.listeners.JobChainingJobListener;
-import org.quartz.listeners.JobListenerSupport;
 
 /**
  *
@@ -25,19 +16,6 @@ import org.quartz.listeners.JobListenerSupport;
  */
 public class AngelScheduler extends base.BaseEntity {
 
-    private static Date startTime;
-    private static Date worldBoss1;
-    private static Date worldBoss2;
-    private static Date guildBoss;
-    private static Date resourceWar;
-    private static Date safeBonus1;
-    private static Date safeBonus2;
-    private static Date crossWars;
-    private static Date crusade;
-    private static Date conquest;
-    private static Date specialAction1;
-    private static Date specialAction2;
-    private static Date specialAction3;
     private final Scheduler scheduler;
 
     public AngelScheduler() throws SchedulerException {
@@ -45,11 +23,15 @@ public class AngelScheduler extends base.BaseEntity {
     }
 
     public void addEvent(Event event) {
-        Trigger trigger = TriggerBuilder.newTrigger()
+        Trigger trigger = newTrigger()
                 .withSchedule(cronSchedule(event.getSchedule()))
+                .build();
+        Trigger endTrigger = newTrigger()
+                .startAt(event.getEndDate())
                 .build();
         try {
             scheduler.scheduleJob(event.getJob(), trigger);
+            scheduler.scheduleJob(event.getTearDown(), endTrigger);
         } catch (SchedulerException ex) {
             error(ex);
         }

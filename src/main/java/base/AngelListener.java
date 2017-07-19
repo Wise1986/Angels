@@ -1,10 +1,8 @@
 package base;
 
-import events.api.Event;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 import org.quartz.TriggerListener;
-import org.quartz.listeners.SchedulerListenerSupport;
 
 /**
  *
@@ -31,7 +29,6 @@ public class AngelListener extends BaseEntity implements TriggerListener{
     @Override
     public void triggerComplete(Trigger trgr, JobExecutionContext jec, Trigger.CompletedExecutionInstruction cei) {
         debug("triggerComplete");
-        ((Event) jec.getJobInstance()).finishEvent();
     }
 
     @Override

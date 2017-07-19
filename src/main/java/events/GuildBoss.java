@@ -3,7 +3,6 @@ package events;
 import events.api.Event;
 import java.util.Calendar;
 import java.util.Date;
-import org.quartz.DateBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -25,20 +24,10 @@ public class GuildBoss extends base.BaseEntity implements Event, Job {
     //in seconds
     private static final int DEFAULT_TIMEOUT = 15;
     public static Boolean triedBack;
-    public String schedule = "";
+    public String schedule = "0 0 20 1/2 * ? *";
 
     public GuildBoss() {
         triedBack = false;
-    }
-
-    @Override
-    public void finishEvent() {
-        click(backButton);
-    }
-
-    @Override
-    public int getDuration() {
-        return DEFAULT_DURATION;
     }
 
     @Override
@@ -61,11 +50,26 @@ public class GuildBoss extends base.BaseEntity implements Event, Job {
 
     @Override
     public JobDetail getJob() {
-        return JobBuilder.newJob(GuildBoss.class).withIdentity("Guild Boss").build();
+        return JobBuilder.newJob(GuildBoss.class).build();
     }
 
     @Override
     public String getSchedule() {
         return schedule;
+    }
+
+    @Override
+    public JobDetail getTearDown() {
+        return JobBuilder.newJob(TearDown.class).build();
+    }
+
+    public class TearDown implements Job {
+
+        @Override
+        public void execute(JobExecutionContext jec) throws JobExecutionException {
+            debug("finish");
+            click(backButton);
+        }
+
     }
 }

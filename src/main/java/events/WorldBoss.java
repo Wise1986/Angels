@@ -8,6 +8,7 @@ import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import util.Common;
 
 /**
@@ -23,7 +24,7 @@ public class WorldBoss extends BaseEntity implements Event, Job {
     public static final int DEFAULT_DURATION = 1;
     //in seconds
     private static final int DEFAULT_TIMEOUT = 15;
-    public String schedule = "";
+    public String schedule = "0 45 12 1/1 * ? *";
     public static Boolean triedBack;
     private Calendar cal = Calendar.getInstance();
 
@@ -31,15 +32,9 @@ public class WorldBoss extends BaseEntity implements Event, Job {
         triedBack = false;
     }
 
-    @Override
-    public void finishEvent() {
-        debug("finish");
-        click(backButton);
-    }
-
-    @Override
-    public int getDuration() {
-        return DEFAULT_DURATION;
+    public WorldBoss(String cron) {
+        triedBack = false;
+        schedule = cron;
     }
 
     @Override
@@ -71,4 +66,18 @@ public class WorldBoss extends BaseEntity implements Event, Job {
         return JobBuilder.newJob(WorldBoss.class).build();
     }
 
+    @Override
+    public JobDetail getTearDown() {
+        return JobBuilder.newJob(TearDown.class).build();
+    }
+
+    public class TearDown implements Job {
+
+        @Override
+        public void execute(JobExecutionContext jec) throws JobExecutionException {
+            debug("finish");
+            click(backButton);
+        }
+
+    }
 }

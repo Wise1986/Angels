@@ -9,13 +9,11 @@ import org.quartz.JobDetail;
  */
 public interface Event {
 
-    public void finishEvent();
-
-    public int getDuration();
-
     public String getSchedule();
 
-    public Date getEndDate();
+    public JobDetail getTearDown();
 
     public JobDetail getJob();
+    
+    public Date getEndDate();
 }
